@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="src/03101-Proyecto2.Api/03101-Proyecto2.Api.csproj" />
+  <Project Path="src/03101-Proyecto2.Contracts/03101-Proyecto2.Contracts.csproj" />
+  <Project Path="src/03101-Proyecto2.Web/03101-Proyecto2.Web.csproj" />
+</Solution>

@@ -1,0 +1,7 @@
+@ApiHost = https://localhost:7005
+
+### Verificación de que la API está arriba (OpenAPI en Development)
+GET {{ApiHost}}/openapi/v1.json
+Accept: application/json
+
+###
