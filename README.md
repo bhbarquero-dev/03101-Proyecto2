@@ -33,6 +33,15 @@ docs/                                 Material del documento técnico
 - .NET SDK 10 (fijado en `global.json`)
 - SQL Server Express LocalDB, incluido con Visual Studio (instancia `(localdb)\MSSQLLocalDB`)
 
+## Base de datos
+
+Antes de la primera ejecución, crear la base de datos y cargar los datos semilla
+(detalle y cuentas de prueba en [database/README.md](database/README.md)):
+
+```
+./database/crear-bd.ps1
+```
+
 ## Ejecución
 
 Las dos aplicaciones deben correr al mismo tiempo (la Web consume la API).

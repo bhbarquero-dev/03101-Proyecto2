@@ -1,6 +1,8 @@
 using System.Text;
+using _03101_Proyecto2.Api.Data;
 using _03101_Proyecto2.Api.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,7 +38,11 @@ builder.Services
 
 builder.Services.AddAuthorization();
 
-// TODO: registrar el DbContext de EF Core cuando exista el modelo de datos.
+// Acceso a datos: EF Core sobre el esquema creado por los scripts de la carpeta database.
+builder.Services.AddDbContext<GestionProyectosContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("GestionProyectos")
+            ?? throw new InvalidOperationException("Falta la cadena de conexión 'GestionProyectos'.")));
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
