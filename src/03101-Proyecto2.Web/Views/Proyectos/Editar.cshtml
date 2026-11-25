@@ -1,0 +1,23 @@
+@model ProyectoFormViewModel
+@{
+    ViewData["Title"] = "Editar proyecto";
+}
+
+<nav aria-label="Ruta de navegación">
+    <ol class="breadcrumb small mb-2">
+        <li class="breadcrumb-item"><a asp-action="Index">Proyectos</a></li>
+        <li class="breadcrumb-item"><a asp-action="Detalle" asp-route-id="@Model.Id">@Model.Nombre</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Editar</li>
+    </ol>
+</nav>
+
+<div class="app-encabezado">
+    <h1 class="h3 mb-1">Editar proyecto</h1>
+    <p>El estado no cambia aquí: un proyecto se cierra desde su detalle.</p>
+</div>
+
+<partial name="_Formulario" model="Model" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

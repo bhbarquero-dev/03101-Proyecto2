@@ -1,0 +1,5 @@
+@model ProyectoDto
+@{
+    var clase = Model.IdEstado == EstadosIds.Activo ? "app-estado-activo" : "app-estado-cerrado";
+}
+<span class="app-estado @clase">@Model.Estado</span>

@@ -1,0 +1,22 @@
+@model ProyectoFormViewModel
+@{
+    ViewData["Title"] = "Nuevo proyecto";
+}
+
+<nav aria-label="Ruta de navegación">
+    <ol class="breadcrumb small mb-2">
+        <li class="breadcrumb-item"><a asp-action="Index">Proyectos</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Nuevo</li>
+    </ol>
+</nav>
+
+<div class="app-encabezado">
+    <h1 class="h3 mb-1">Nuevo proyecto</h1>
+    <p>El proyecto se crea en estado Activo.</p>
+</div>
+
+<partial name="_Formulario" model="Model" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,3 +1,4 @@
+using _03101_Proyecto2.Web.Filters;
 using _03101_Proyecto2.Web.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -30,7 +31,16 @@ var apiBaseUrl = new Uri(builder.Configuration["Api:BaseUrl"]
     ?? throw new InvalidOperationException("Falta 'Api:BaseUrl' en la configuración."));
 builder.Services.AddHttpClient<AuthApiClient>(client => client.BaseAddress = apiBaseUrl);
 
-builder.Services.AddControllersWithViews();
+// Los demás clientes reenvían el JWT de la sesión en cada solicitud (TokenBearerHandler).
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<TokenBearerHandler>();
+builder.Services.AddHttpClient<ProyectosApiClient>(client => client.BaseAddress = apiBaseUrl)
+    .AddHttpMessageHandler<TokenBearerHandler>();
+builder.Services.AddHttpClient<CatalogosApiClient>(client => client.BaseAddress = apiBaseUrl)
+    .AddHttpMessageHandler<TokenBearerHandler>();
+
+// ErroresApiFilter traduce las respuestas 401 y 403 de la API y sus fallas de conexión.
+builder.Services.AddControllersWithViews(options => options.Filters.Add<ErroresApiFilter>());
 
 var app = builder.Build();
 

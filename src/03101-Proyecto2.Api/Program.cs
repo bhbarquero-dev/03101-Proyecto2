@@ -58,6 +58,10 @@ builder.Services.AddSingleton<IPasswordHasher<Usuario>, PasswordHasher<Usuario>>
 builder.Services.AddSingleton<TokenService>();
 builder.Services.AddScoped<AuthService>();
 
+// Servicios de negocio.
+builder.Services.AddScoped<ProyectosService>();
+builder.Services.AddScoped<CatalogosService>();
+
 builder.Services.AddControllers();
 builder.Services.AddProblemDetails();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

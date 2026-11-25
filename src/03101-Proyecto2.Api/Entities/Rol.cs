@@ -10,11 +10,11 @@ public class Rol
         public const int Usuario = 2;
     }
 
-    /// <summary>Nombres de rol, tal como viajan en el claim "role" del JWT.</summary>
+    /// <summary>Nombres de rol, tal como viajan en el claim "role" del JWT (definidos en Contracts).</summary>
     public static class Nombres
     {
-        public const string Administrador = "Administrador";
-        public const string Usuario = "Usuario";
+        public const string Administrador = Contracts.Auth.Roles.Administrador;
+        public const string Usuario = Contracts.Auth.Roles.Usuario;
     }
 
     public int Id { get; set; }

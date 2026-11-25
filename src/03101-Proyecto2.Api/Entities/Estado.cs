@@ -7,15 +7,15 @@ namespace _03101_Proyecto2.Api.Entities;
 /// </summary>
 public class Estado
 {
-    /// <summary>Identificadores cargados por database/Datos/02_Estados.sql.</summary>
+    /// <summary>Identificadores cargados por database/Datos/02_Estados.sql (definidos en Contracts).</summary>
     public static class Ids
     {
-        public const int Activo = 1;
-        public const int Cerrado = 2;
-        public const int Pendiente = 3;
-        public const int EnProgreso = 4;
-        public const int Completada = 5;
-        public const int Cancelada = 6;
+        public const int Activo = Contracts.Catalogos.EstadosIds.Activo;
+        public const int Cerrado = Contracts.Catalogos.EstadosIds.Cerrado;
+        public const int Pendiente = Contracts.Catalogos.EstadosIds.Pendiente;
+        public const int EnProgreso = Contracts.Catalogos.EstadosIds.EnProgreso;
+        public const int Completada = Contracts.Catalogos.EstadosIds.Completada;
+        public const int Cancelada = Contracts.Catalogos.EstadosIds.Cancelada;
     }
 
     /// <summary>Valores posibles de <see cref="EntidadAplicacion"/> (restricción CK_Estados_EntidadAplicacion).</summary>

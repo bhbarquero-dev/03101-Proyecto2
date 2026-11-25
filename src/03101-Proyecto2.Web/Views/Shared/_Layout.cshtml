@@ -40,6 +40,9 @@
                             <li class="nav-item">
                                 <a class="nav-link @Activo("Home")" asp-controller="Home" asp-action="Index">Dashboard</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link @Activo("Proyectos")" asp-controller="Proyectos" asp-action="Index">Proyectos</a>
+                            </li>
                         </ul>
                         <div class="d-flex align-items-center justify-content-between gap-3 pb-2 pb-md-0">
                             <div class="app-usuario">
@@ -60,6 +63,13 @@
     }
 
     <main role="main" class="container app-main flex-grow-1">
+        @if (TempData["Mensaje"] is string mensaje)
+        {
+            <div class="alert alert-success alert-dismissible fade show app-mensaje" role="status">
+                @mensaje
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+            </div>
+        }
         @RenderBody()
     </main>
 

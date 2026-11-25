@@ -4,4 +4,72 @@
 GET {{ApiHost}}/openapi/v1.json
 Accept: application/json
 
+### Inicio de sesión con la cuenta semilla de Administrador (ver README)
+# @name login
+POST {{ApiHost}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@gestionproyectos.test",
+  "contrasena": "Admin#2026"
+}
+
 ###
+@Token = {{login.response.body.$.token}}
+
+### Catálogos para los formularios
+GET {{ApiHost}}/api/catalogos
+Authorization: Bearer {{Token}}
+
+### Listar proyectos
+GET {{ApiHost}}/api/proyectos
+Authorization: Bearer {{Token}}
+
+### Detalle de un proyecto
+GET {{ApiHost}}/api/proyectos/1
+Authorization: Bearer {{Token}}
+
+### Crear un proyecto (201)
+POST {{ApiHost}}/api/proyectos
+Authorization: Bearer {{Token}}
+Content-Type: application/json
+
+{
+  "nombre": "Proyecto desde el archivo .http",
+  "descripcion": "Prueba de POST /api/proyectos.",
+  "fechaInicio": "2026-12-01",
+  "fechaFinEstimada": "2027-01-29",
+  "idResponsable": 2
+}
+
+### Crear con fechas incoherentes (400, CA-04.2)
+POST {{ApiHost}}/api/proyectos
+Authorization: Bearer {{Token}}
+Content-Type: application/json
+
+{
+  "nombre": "Fechas al revés",
+  "fechaInicio": "2026-12-10",
+  "fechaFinEstimada": "2026-12-01",
+  "idResponsable": 2
+}
+
+### Actualizar un proyecto
+PUT {{ApiHost}}/api/proyectos/1
+Authorization: Bearer {{Token}}
+Content-Type: application/json
+
+{
+  "nombre": "Portal de clientes",
+  "descripcion": "Sitio web para que los clientes consulten el avance de sus proyectos.",
+  "fechaInicio": "2026-09-01",
+  "fechaFinEstimada": "2026-12-18",
+  "idResponsable": 1
+}
+
+### Cerrar un proyecto (204, CA-04.3)
+DELETE {{ApiHost}}/api/proyectos/1
+Authorization: Bearer {{Token}}
+
+### Sin token (401, CA-07.4)
+GET {{ApiHost}}/api/proyectos
