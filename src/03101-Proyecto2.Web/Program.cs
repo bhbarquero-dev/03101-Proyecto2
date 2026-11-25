@@ -1,4 +1,6 @@
+using _03101_Proyecto2.Web.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,12 +21,14 @@ builder.Services
         options.SlidingExpiration = false;
     });
 
-builder.Services.AddAuthorization();
+// Toda página exige sesión iniciada, salvo las marcadas con [AllowAnonymous] (login y error).
+builder.Services.AddAuthorizationBuilder()
+    .SetFallbackPolicy(new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build());
 
-// Cliente HTTP hacia la API REST.
-var apiBaseUrl = builder.Configuration["Api:BaseUrl"]
-    ?? throw new InvalidOperationException("Falta 'Api:BaseUrl' en la configuración.");
-builder.Services.AddHttpClient("Api", client => client.BaseAddress = new Uri(apiBaseUrl));
+// Clientes HTTP hacia la API REST. Los controladores MVC nunca acceden a la base de datos.
+var apiBaseUrl = new Uri(builder.Configuration["Api:BaseUrl"]
+    ?? throw new InvalidOperationException("Falta 'Api:BaseUrl' en la configuración."));
+builder.Services.AddHttpClient<AuthApiClient>(client => client.BaseAddress = apiBaseUrl);
 
 builder.Services.AddControllersWithViews();
 
@@ -43,7 +47,8 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapStaticAssets();
+// Los archivos estáticos (CSS, JS) son públicos: la página de login los necesita sin sesión.
+app.MapStaticAssets().AllowAnonymous();
 
 app.MapControllerRoute(
     name: "default",

@@ -1,0 +1,37 @@
+@model _03101_Proyecto2.Web.Models.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Iniciar sesión";
+}
+
+<div class="app-login">
+    <div class="app-card">
+        <div class="text-center mb-4">
+            <partial name="_Logo" />
+            <h1 class="h4 mt-3 mb-1">Gestión de Proyectos</h1>
+            <p class="text-body-secondary small mb-0">Ingrese con su correo y contraseña</p>
+        </div>
+
+        <form asp-action="Login" method="post" novalidate>
+            <input type="hidden" asp-for="ReturnUrl" />
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small" role="alert"></div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" autocomplete="username" placeholder="nombre@empresa.com" autofocus />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Contrasena" class="form-label"></label>
+                <input asp-for="Contrasena" class="form-control" autocomplete="current-password" />
+                <span asp-validation-for="Contrasena" class="text-danger small"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-2">Ingresar</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

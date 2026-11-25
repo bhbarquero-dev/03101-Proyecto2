@@ -1,25 +1,17 @@
-using _03101_Proyecto2.Web.Models;
-using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using _03101_Proyecto2.Web.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
-namespace _03101_Proyecto2.Web.Controllers
+namespace _03101_Proyecto2.Web.Controllers;
+
+public sealed class HomeController : Controller
 {
-    public class HomeController : Controller
-    {
-        public IActionResult Index()
-        {
-            return View();
-        }
+    /// <summary>Página de inicio después del login. Aquí se mostrará el dashboard (HU-06).</summary>
+    public IActionResult Index() => View();
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-    }
+    [AllowAnonymous]
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error() =>
+        View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
 }

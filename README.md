@@ -42,6 +42,16 @@ Antes de la primera ejecución, crear la base de datos y cargar los datos semill
 ./database/crear-bd.ps1
 ```
 
+## Cuentas de prueba
+
+Los datos semilla crean estas cuentas (solo para desarrollo y demostración):
+
+| Correo | Contraseña | Rol |
+|---|---|---|
+| admin@gestionproyectos.test | Admin#2026 | Administrador |
+| ana.mora@gestionproyectos.test | Usuario#2026 | Usuario |
+| luis.solis@gestionproyectos.test | Usuario#2026 | Usuario |
+
 ## Ejecución
 
 Las dos aplicaciones deben correr al mismo tiempo (la Web consume la API).
