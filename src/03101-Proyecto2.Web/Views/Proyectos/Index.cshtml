@@ -52,7 +52,7 @@ else
                             <td>@proyecto.Responsable</td>
                             <td class="text-nowrap">@proyecto.FechaInicio.ToString("dd/MM/yyyy")</td>
                             <td class="text-nowrap">@proyecto.FechaFinEstimada.ToString("dd/MM/yyyy")</td>
-                            <td><partial name="_Avance" model="proyecto" /></td>
+                            <td><partial name="_Avance" model="(proyecto.TareasCompletadas, proyecto.TotalTareas)" /></td>
                             <td><partial name="_EstadoProyecto" model="proyecto" /></td>
                         </tr>
                     }

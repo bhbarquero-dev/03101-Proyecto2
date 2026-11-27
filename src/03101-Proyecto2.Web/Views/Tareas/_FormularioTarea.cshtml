@@ -1,0 +1,86 @@
+@model TareaFormViewModel
+@{
+    var titulo = Model.Id is null ? "Nueva tarea" : Model.SoloEstadoYPrioridad ? "Actualizar tarea" : "Editar tarea";
+}
+
+<form asp-controller="Tareas" asp-action="Guardar" method="post" novalidate class="modal-content" id="formTarea">
+    <div class="modal-header">
+        <h2 class="modal-title h5" id="modalTareaTitulo">@titulo</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+    </div>
+
+    <div class="modal-body">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="IdProyecto" />
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small" role="alert"></div>
+
+        @if (Model.SoloEstadoYPrioridad)
+        {
+            @* El Usuario ve los datos de su tarea y cambia solo el estado y la prioridad. *@
+            <dl class="app-datos mb-4">
+                <dt>Título</dt>
+                <dd>@Model.Titulo</dd>
+                @if (!string.IsNullOrWhiteSpace(Model.Descripcion))
+                {
+                    <dt>Descripción</dt>
+                    <dd class="app-texto-largo">@Model.Descripcion</dd>
+                }
+                <dt>Asignado a</dt>
+                <dd>@Model.NombreAsignado</dd>
+                <dt>Fecha de vencimiento</dt>
+                <dd>@(Model.FechaVencimiento?.ToString("dd/MM/yyyy") ?? "Sin fecha")</dd>
+            </dl>
+        }
+        else
+        {
+            <div class="mb-3">
+                <label asp-for="Titulo" class="form-label"></label>
+                <input asp-for="Titulo" class="form-control" maxlength="150" />
+                <span asp-validation-for="Titulo" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Descripcion" class="form-label"></label>
+                <textarea asp-for="Descripcion" class="form-control" rows="3" maxlength="1000"></textarea>
+                <span asp-validation-for="Descripcion" class="text-danger small"></span>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-sm-7">
+                    <label asp-for="IdAsignado" class="form-label"></label>
+                    <select asp-for="IdAsignado" asp-items="Model.Asignados" class="form-select">
+                        <option value="">Seleccione…</option>
+                    </select>
+                    <span asp-validation-for="IdAsignado" class="text-danger small"></span>
+                </div>
+                <div class="col-sm-5">
+                    <label asp-for="FechaVencimiento" class="form-label"></label>
+                    <input asp-for="FechaVencimiento" type="date" asp-format="{0:yyyy-MM-dd}" class="form-control" />
+                    <span asp-validation-for="FechaVencimiento" class="text-danger small"></span>
+                </div>
+            </div>
+        }
+
+        <div class="row g-3">
+            <div class="col-sm-6">
+                <label asp-for="IdEstado" class="form-label"></label>
+                <select asp-for="IdEstado" asp-items="Model.Estados" class="form-select">
+                    <option value="">Seleccione…</option>
+                </select>
+                <span asp-validation-for="IdEstado" class="text-danger small"></span>
+            </div>
+            <div class="col-sm-6">
+                <label asp-for="IdPrioridad" class="form-label"></label>
+                <select asp-for="IdPrioridad" asp-items="Model.Prioridades" class="form-select">
+                    <option value="">Seleccione…</option>
+                </select>
+                <span asp-validation-for="IdPrioridad" class="text-danger small"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+    </div>
+</form>

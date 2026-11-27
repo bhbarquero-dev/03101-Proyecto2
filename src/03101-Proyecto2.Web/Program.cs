@@ -1,5 +1,6 @@
 using _03101_Proyecto2.Web.Filters;
 using _03101_Proyecto2.Web.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 
@@ -20,6 +21,11 @@ builder.Services
         options.Cookie.SameSite = SameSiteMode.Strict;
         options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
         options.SlidingExpiration = false;
+
+        // A una solicitud hecha con fetch no se le responde con una redirección al login o a
+        // Acceso denegado (fetch la seguiría y recibiría esa página), sino con 401 o 403.
+        options.Events.OnRedirectToLogin = contexto => ResponderRedireccion(contexto, StatusCodes.Status401Unauthorized);
+        options.Events.OnRedirectToAccessDenied = contexto => ResponderRedireccion(contexto, StatusCodes.Status403Forbidden);
     });
 
 // Toda página exige sesión iniciada, salvo las marcadas con [AllowAnonymous] (login y error).
@@ -37,6 +43,8 @@ builder.Services.AddTransient<TokenBearerHandler>();
 builder.Services.AddHttpClient<ProyectosApiClient>(client => client.BaseAddress = apiBaseUrl)
     .AddHttpMessageHandler<TokenBearerHandler>();
 builder.Services.AddHttpClient<CatalogosApiClient>(client => client.BaseAddress = apiBaseUrl)
+    .AddHttpMessageHandler<TokenBearerHandler>();
+builder.Services.AddHttpClient<TareasApiClient>(client => client.BaseAddress = apiBaseUrl)
     .AddHttpMessageHandler<TokenBearerHandler>();
 
 // ErroresApiFilter traduce las respuestas 401 y 403 de la API y sus fallas de conexión.
@@ -66,3 +74,17 @@ app.MapControllerRoute(
     .WithStaticAssets();
 
 app.Run();
+
+static Task ResponderRedireccion(RedirectContext<CookieAuthenticationOptions> contexto, int codigoAjax)
+{
+    if (SolicitudAjax.Es(contexto.Request))
+    {
+        contexto.Response.StatusCode = codigoAjax;
+    }
+    else
+    {
+        contexto.Response.Redirect(contexto.RedirectUri);
+    }
+
+    return Task.CompletedTask;
+}

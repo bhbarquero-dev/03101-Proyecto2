@@ -103,17 +103,9 @@ public sealed class ProyectosService(GestionProyectosContext db)
         return true;
     }
 
-    /// <summary>
-    /// El Administrador ve todos los proyectos. El Usuario solo aquellos en los que participa:
-    /// es su responsable o tiene al menos una tarea asignada (sección 4.3 del documento).
-    /// </summary>
-    private IQueryable<Proyecto> Visibles(int idUsuario, bool esAdministrador)
-    {
-        var consulta = db.Proyectos.AsNoTracking();
-        return esAdministrador
-            ? consulta
-            : consulta.Where(p => p.IdResponsable == idUsuario || p.Tareas.Any(t => t.IdAsignado == idUsuario));
-    }
+    /// <summary>El Administrador ve todos los proyectos; el Usuario, solo aquellos en los que participa.</summary>
+    private IQueryable<Proyecto> Visibles(int idUsuario, bool esAdministrador) =>
+        db.Proyectos.AsNoTracking().Visibles(idUsuario, esAdministrador);
 
     private Task<ProyectoDto> LeerAsync(int id, CancellationToken ct) =>
         db.Proyectos.AsNoTracking().Where(p => p.Id == id).Select(ADto).SingleAsync(ct);

@@ -5,7 +5,8 @@ public enum EstadoResultado
 {
     Exito,
     NoEncontrado,
-    Invalido
+    Invalido,
+    Prohibido
 }
 
 /// <summary>
@@ -15,12 +16,19 @@ public enum EstadoResultado
 public sealed record ResultadoServicio<T>(
     EstadoResultado Estado,
     T? Valor = default,
-    IReadOnlyDictionary<string, string[]>? Errores = null)
+    IReadOnlyDictionary<string, string[]>? Errores = null,
+    string? Mensaje = null)
 {
     public static ResultadoServicio<T> Exito(T valor) => new(EstadoResultado.Exito, valor);
 
     public static ResultadoServicio<T> NoEncontrado() => new(EstadoResultado.NoEncontrado);
 
+    /// <summary>El rol del usuario no permite la operación; <paramref name="mensaje"/> explica por qué.</summary>
+    public static ResultadoServicio<T> Prohibido(string mensaje) => new(EstadoResultado.Prohibido, Mensaje: mensaje);
+
     public static ResultadoServicio<T> Invalido(string campo, string mensaje) =>
-        new(EstadoResultado.Invalido, Errores: new Dictionary<string, string[]> { [campo] = [mensaje] });
+        Invalido(new Dictionary<string, string[]> { [campo] = [mensaje] });
+
+    public static ResultadoServicio<T> Invalido(IReadOnlyDictionary<string, string[]> errores) =>
+        new(EstadoResultado.Invalido, Errores: errores);
 }

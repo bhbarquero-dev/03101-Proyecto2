@@ -1,11 +1,11 @@
-@model ProyectoDto
+@model (int Completadas, int Total)
 @{
-    var porcentaje = Model.TotalTareas == 0 ? 0 : (int)Math.Round(100.0 * Model.TareasCompletadas / Model.TotalTareas);
+    var porcentaje = Model.Total == 0 ? 0 : (int)Math.Round(100.0 * Model.Completadas / Model.Total);
 }
 <div class="app-avance">
     <div class="progress" role="progressbar" aria-label="Tareas completadas"
          aria-valuenow="@porcentaje" aria-valuemin="0" aria-valuemax="100">
         <div class="progress-bar" style="width: @porcentaje%"></div>
     </div>
-    <span class="app-avance-texto">@Model.TareasCompletadas de @Model.TotalTareas</span>
+    <span class="app-avance-texto">@Model.Completadas de @Model.Total</span>
 </div>

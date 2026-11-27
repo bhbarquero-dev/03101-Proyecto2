@@ -12,7 +12,10 @@ namespace _03101_Proyecto2.Web.Controllers;
 /// Mantenimiento de proyectos (HU-04). Cualquier usuario consulta los proyectos que la API le
 /// permite ver (CA-07.2); crear, editar y cerrar es solo del Administrador.
 /// </summary>
-public sealed class ProyectosController(ProyectosApiClient proyectosApi, CatalogosApiClient catalogosApi) : Controller
+public sealed class ProyectosController(
+    ProyectosApiClient proyectosApi,
+    TareasApiClient tareasApi,
+    CatalogosApiClient catalogosApi) : Controller
 {
     /// <summary>Clave de TempData para el mensaje de confirmación que muestra el layout.</summary>
     public const string ClaveMensaje = "Mensaje";
@@ -24,8 +27,19 @@ public sealed class ProyectosController(ProyectosApiClient proyectosApi, Catalog
     [HttpGet]
     public async Task<IActionResult> Detalle(int id, CancellationToken ct)
     {
-        var resultado = await proyectosApi.ObtenerAsync(id, ct);
-        return resultado.Exitoso ? View(resultado.Datos) : ProyectoNoEncontrado();
+        var proyecto = await proyectosApi.ObtenerAsync(id, ct);
+        if (!proyecto.Exitoso)
+        {
+            return ProyectoNoEncontrado();
+        }
+
+        var tareas = await tareasApi.ListarPorProyectoAsync(id, ct);
+        if (!tareas.Exitoso)
+        {
+            return ProyectoNoEncontrado();
+        }
+
+        return View(TareasProyectoViewModel.Crear(proyecto.Datos!, tareas.Datos!, User));
     }
 
     [HttpGet]

@@ -71,5 +71,64 @@ Content-Type: application/json
 DELETE {{ApiHost}}/api/proyectos/1
 Authorization: Bearer {{Token}}
 
+### Tareas de un proyecto
+GET {{ApiHost}}/api/proyectos/2/tareas
+Authorization: Bearer {{Token}}
+
+### Detalle de una tarea
+GET {{ApiHost}}/api/tareas/1
+Authorization: Bearer {{Token}}
+
+### Crear una tarea (201, CA-05.1). Estados de tarea: 3 Pendiente, 4 En progreso, 5 Completada, 6 Cancelada.
+# @name nuevaTarea
+POST {{ApiHost}}/api/tareas
+Authorization: Bearer {{Token}}
+Content-Type: application/json
+
+{
+  "idProyecto": 2,
+  "titulo": "Tarea desde el archivo .http",
+  "descripcion": "Prueba de POST /api/tareas.",
+  "idAsignado": 2,
+  "idEstado": 3,
+  "idPrioridad": 2,
+  "fechaVencimiento": "2026-12-20"
+}
+
+###
+@IdTarea = {{nuevaTarea.response.body.$.id}}
+
+### Cambiar estado a «En progreso» y prioridad a «Alta» (200, CA-05.2)
+PUT {{ApiHost}}/api/tareas/{{IdTarea}}
+Authorization: Bearer {{Token}}
+Content-Type: application/json
+
+{
+  "idProyecto": 2,
+  "titulo": "Tarea desde el archivo .http",
+  "descripcion": "Prueba de POST /api/tareas.",
+  "idAsignado": 2,
+  "idEstado": 4,
+  "idPrioridad": 1,
+  "fechaVencimiento": "2026-12-20"
+}
+
+### Estado de proyecto «Cerrado» en una tarea (400, CA-05.3)
+PUT {{ApiHost}}/api/tareas/{{IdTarea}}
+Authorization: Bearer {{Token}}
+Content-Type: application/json
+
+{
+  "idProyecto": 2,
+  "titulo": "Tarea desde el archivo .http",
+  "idAsignado": 2,
+  "idEstado": 2,
+  "idPrioridad": 1
+}
+
+### Cancelar una tarea (204)
+DELETE {{ApiHost}}/api/tareas/{{IdTarea}}
+Authorization: Bearer {{Token}}
+
 ### Sin token (401, CA-07.4)
 GET {{ApiHost}}/api/proyectos

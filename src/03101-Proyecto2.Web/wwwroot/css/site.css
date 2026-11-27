@@ -260,6 +260,66 @@ h1, h2, h3, .h1, .h2, .h3 {
   color: #4b5563;
 }
 
+/* Estados de tarea: Completada usa app-estado-activo y Cancelada app-estado-cerrado. */
+.app-estado-pendiente {
+  background-color: #fdf3dc;
+  color: #8a5a00;
+}
+
+.app-estado-progreso {
+  background-color: var(--app-primario-suave);
+  color: var(--app-primario-oscuro);
+}
+
+/* Prioridad de una tarea: punto de color + nombre */
+.app-prioridad {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.app-prioridad::before {
+  content: "";
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background-color: currentColor;
+}
+
+.app-prioridad-alta {
+  color: #c2410c;
+}
+
+.app-prioridad-media {
+  color: #a16207;
+}
+
+.app-prioridad-baja {
+  color: #6b7280;
+}
+
+.app-vencida {
+  color: #b42318;
+  font-weight: 500;
+}
+
+.app-fila-cancelada td {
+  color: var(--app-texto-suave);
+}
+
+.app-fila-cancelada .fw-semibold {
+  text-decoration: line-through;
+}
+
+.app-texto-corto {
+  max-width: 32rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* Avance: tareas completadas sobre el total */
 .app-avance {
   display: flex;

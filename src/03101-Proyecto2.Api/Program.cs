@@ -60,6 +60,7 @@ builder.Services.AddScoped<AuthService>();
 
 // Servicios de negocio.
 builder.Services.AddScoped<ProyectosService>();
+builder.Services.AddScoped<TareasService>();
 builder.Services.AddScoped<CatalogosService>();
 
 builder.Services.AddControllers();

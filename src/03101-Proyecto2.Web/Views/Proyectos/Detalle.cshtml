@@ -1,30 +1,29 @@
-@model ProyectoDto
+@model TareasProyectoViewModel
 @{
-    ViewData["Title"] = Model.Nombre;
-    var esAdministrador = User.IsInRole(Roles.Administrador);
-    var activo = Model.IdEstado == EstadosIds.Activo;
+    var proyecto = Model.Proyecto;
+    ViewData["Title"] = proyecto.Nombre;
 }
 
 <nav aria-label="Ruta de navegación">
     <ol class="breadcrumb small mb-2">
         <li class="breadcrumb-item"><a asp-action="Index">Proyectos</a></li>
-        <li class="breadcrumb-item active" aria-current="page">@Model.Nombre</li>
+        <li class="breadcrumb-item active" aria-current="page">@proyecto.Nombre</li>
     </ol>
 </nav>
 
 <div class="app-encabezado d-flex flex-wrap align-items-start justify-content-between gap-3">
     <div>
         <div class="d-flex align-items-center gap-2 mb-1">
-            <h1 class="h3 mb-0">@Model.Nombre</h1>
-            <partial name="_EstadoProyecto" model="Model" />
+            <h1 class="h3 mb-0">@proyecto.Nombre</h1>
+            <partial name="_EstadoProyecto" model="proyecto" />
         </div>
-        <p>Responsable: @Model.Responsable</p>
+        <p>Responsable: @proyecto.Responsable</p>
     </div>
-    @if (esAdministrador)
+    @if (Model.EsAdministrador)
     {
         <div class="d-flex gap-2">
-            <a asp-action="Editar" asp-route-id="@Model.Id" class="btn btn-outline-primary">Editar</a>
-            @if (activo)
+            <a asp-action="Editar" asp-route-id="@proyecto.Id" class="btn btn-outline-primary">Editar</a>
+            @if (Model.ProyectoActivo)
             {
                 <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmarCierre">
                     Cerrar proyecto
@@ -38,13 +37,13 @@
     <div class="col-lg-8">
         <div class="app-card p-4 h-100">
             <h2 class="h6 app-titulo-seccion">Descripción</h2>
-            @if (string.IsNullOrWhiteSpace(Model.Descripcion))
+            @if (string.IsNullOrWhiteSpace(proyecto.Descripcion))
             {
                 <p class="text-body-secondary mb-0">Sin descripción.</p>
             }
             else
             {
-                <p class="mb-0 app-texto-largo">@Model.Descripcion</p>
+                <p class="mb-0 app-texto-largo">@proyecto.Descripcion</p>
             }
         </div>
     </div>
@@ -53,34 +52,37 @@
             <h2 class="h6 app-titulo-seccion">Datos del proyecto</h2>
             <dl class="app-datos mb-0">
                 <dt>Fecha de inicio</dt>
-                <dd>@Model.FechaInicio.ToString("dd/MM/yyyy")</dd>
+                <dd>@proyecto.FechaInicio.ToString("dd/MM/yyyy")</dd>
                 <dt>Fecha estimada de fin</dt>
-                <dd>@Model.FechaFinEstimada.ToString("dd/MM/yyyy")</dd>
-                <dt>Tareas completadas</dt>
-                <dd><partial name="_Avance" model="Model" /></dd>
+                <dd>@proyecto.FechaFinEstimada.ToString("dd/MM/yyyy")</dd>
                 <dt>Registrado</dt>
-                <dd>@Model.FechaCreacion.ToLocalTime().ToString("dd/MM/yyyy")</dd>
+                <dd>@proyecto.FechaCreacion.ToLocalTime().ToString("dd/MM/yyyy")</dd>
             </dl>
         </div>
     </div>
 </div>
 
-<div class="app-card p-4 mt-4">
-    <h2 class="h6 app-titulo-seccion">Tareas</h2>
-    <p class="text-body-secondary mb-0">Aquí se mostrarán las tareas del proyecto.</p>
+@* tareas.js reemplaza este contenedor con la sección actualizada después de cada operación. *@
+<section id="tareas-proyecto" class="mt-4" aria-live="polite">
+    <partial name="~/Views/Tareas/_TareasProyecto.cshtml" model="Model" />
+</section>
+
+@* Diálogo de tarea: tareas.js carga aquí el formulario de nueva tarea o de edición. *@
+<div class="modal fade" id="modalTarea" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" id="modalTareaContenido"></div>
 </div>
 
-@if (esAdministrador && activo)
+@if (Model.EsAdministrador && Model.ProyectoActivo)
 {
     <div class="modal fade" id="confirmarCierre" tabindex="-1" aria-labelledby="confirmarCierreTitulo" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <form asp-action="Cerrar" asp-route-id="@Model.Id" method="post" class="modal-content">
+            <form asp-action="Cerrar" asp-route-id="@proyecto.Id" method="post" class="modal-content">
                 <div class="modal-header">
                     <h2 class="modal-title h5" id="confirmarCierreTitulo">¿Cerrar el proyecto?</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cancelar"></button>
                 </div>
                 <div class="modal-body">
-                    «@Model.Nombre» pasará a estado Cerrado y dejará de contarse entre los proyectos activos.
+                    «@proyecto.Nombre» pasará a estado Cerrado y dejará de contarse entre los proyectos activos.
                     Sus tareas se conservan.
                 </div>
                 <div class="modal-footer">
@@ -90,4 +92,9 @@
             </form>
         </div>
     </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/tareas.js" asp-append-version="true"></script>
 }

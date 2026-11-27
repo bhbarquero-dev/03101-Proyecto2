@@ -1,0 +1,113 @@
+@model TareasProyectoViewModel
+@{
+    var hoy = DateOnly.FromDateTime(DateTime.Today);
+
+    static string ClaseEstado(int idEstado) => idEstado switch
+    {
+        EstadosIds.EnProgreso => "app-estado-progreso",
+        EstadosIds.Completada => "app-estado-activo",
+        EstadosIds.Cancelada => "app-estado-cerrado",
+        _ => "app-estado-pendiente"
+    };
+
+    static string ClasePrioridad(int idPrioridad) => idPrioridad switch
+    {
+        PrioridadesIds.Alta => "app-prioridad-alta",
+        PrioridadesIds.Media => "app-prioridad-media",
+        _ => "app-prioridad-baja"
+    };
+}
+
+<div class="app-card">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 p-4 pb-3">
+        <div class="d-flex align-items-center gap-3">
+            <h2 class="h6 app-titulo-seccion mb-0">Tareas</h2>
+            <partial name="_Avance" model="(Model.Completadas, Model.Tareas.Count)" />
+        </div>
+        @if (Model.PuedeCrear)
+        {
+            <button type="button" class="btn btn-primary btn-sm"
+                    data-tarea-formulario="@Url.Action("Formulario", "Tareas", new { idProyecto = Model.Proyecto.Id })">
+                Nueva tarea
+            </button>
+        }
+    </div>
+
+    @if (Model.Mensaje is not null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mx-4 py-2 small" role="status">
+            @Model.Mensaje
+            <button type="button" class="btn-close py-2" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+    }
+
+    @if (!Model.ProyectoActivo)
+    {
+        <p class="small text-body-secondary px-4">El proyecto está cerrado: sus tareas se conservan, pero ya no se modifican.</p>
+    }
+
+    @if (Model.Tareas.Count == 0)
+    {
+        <p class="text-body-secondary px-4 pb-4 mb-0">Este proyecto todavía no tiene tareas.</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table app-tabla mb-0 align-middle">
+                <thead>
+                    <tr>
+                        <th scope="col">Tarea</th>
+                        <th scope="col">Asignado a</th>
+                        <th scope="col">Prioridad</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Vence</th>
+                        <th scope="col"><span class="visually-hidden">Acciones</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var tarea in Model.Tareas)
+                    {
+                        var abierta = tarea.IdEstado is EstadosIds.Pendiente or EstadosIds.EnProgreso;
+                        var vencida = abierta && tarea.FechaVencimiento < hoy;
+                        <tr class="@(tarea.IdEstado == EstadosIds.Cancelada ? "app-fila-cancelada" : null)">
+                            <td>
+                                <div class="fw-semibold">@tarea.Titulo</div>
+                                @if (!string.IsNullOrWhiteSpace(tarea.Descripcion))
+                                {
+                                    <div class="small text-body-secondary app-texto-corto">@tarea.Descripcion</div>
+                                }
+                            </td>
+                            <td class="text-nowrap">@tarea.Asignado</td>
+                            <td><span class="app-prioridad @ClasePrioridad(tarea.IdPrioridad)">@tarea.Prioridad</span></td>
+                            <td><span class="app-estado @ClaseEstado(tarea.IdEstado)">@tarea.Estado</span></td>
+                            <td class="text-nowrap @(vencida ? "app-vencida" : null)">
+                                @(tarea.FechaVencimiento?.ToString("dd/MM/yyyy") ?? "—")
+                                @if (vencida)
+                                {
+                                    <span class="d-block small">Vencida</span>
+                                }
+                            </td>
+                            <td class="text-end text-nowrap">
+                                @if (Model.PuedeEditar(tarea))
+                                {
+                                    <button type="button" class="btn btn-outline-primary btn-sm"
+                                            data-tarea-formulario="@Url.Action("Formulario", "Tareas", new { idProyecto = Model.Proyecto.Id, id = tarea.Id })">
+                                        @(Model.EsAdministrador ? "Editar" : "Actualizar")
+                                    </button>
+                                }
+                                @if (Model.PuedeCancelar(tarea))
+                                {
+                                    <form asp-controller="Tareas" asp-action="Cancelar" asp-route-id="@tarea.Id"
+                                          asp-route-idProyecto="@Model.Proyecto.Id" method="post" class="d-inline"
+                                          data-tarea-cancelar="¿Cancelar la tarea «@tarea.Titulo»? Se conserva con estado Cancelada.">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">Cancelar</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
